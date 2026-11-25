@@ -16,20 +16,25 @@
  text(config.churchName,76,91,"800 31px 'DM Sans'",C.cream);
  text(config.churchSubname,77,123,"700 19px 'DM Sans'","#d6c89f");
  ctx.fillStyle=C.gold;ctx.fillRect(76,151,72,4);
- // Programme and theme have their own clear space, separate from portrait
- text(config.programmeName,76,208,"700 21px 'DM Sans'",C.gold);
- text("TIME TO",76,324,"700 88px 'DM Sans'",C.cream);
- text("GATHER",76,416,"italic 700 104px 'Playfair Display'",C.gold);
- text("ONE PEOPLE. ONE PURPOSE.",80,456,"600 16px 'DM Sans'","#d7ded6");
+ // A clear personal attendance declaration, with the portrait in a separate column
+ text("I,",76,226,"700 34px 'DM Sans'",C.gold);
+ const attendee=(nameInput.value.trim()||"YOUR FULL NAME").toUpperCase();
+ text(attendee,76,300,`700 ${fit(attendee,500,43,22)}px 'DM Sans'`,C.cream);
+ ctx.fillStyle=C.gold;ctx.fillRect(76,329,76,4);
+ text("WILL BE ATTENDING",76,385,"700 28px 'DM Sans'","#e5dfcf");
+ text(config.programmeName.toUpperCase(),76,465,`800 ${fit(config.programmeName.toUpperCase(),500,40,20)}px 'DM Sans'`,C.gold);
+ text(config.theme.toUpperCase(),76,515,`600 ${fit(config.theme.toUpperCase(),500,23,16)}px 'DM Sans'`,C.cream);
+ text("AND I LOOK FORWARD TO BEING THERE.",76,565,"500 14px 'DM Sans'',"#d7ded6");
  // Portrait sits in its own right-hand column and never crosses the theme
  const px=625,py=250,pw=379,ph=520;
  if(photo){ctx.save();ctx.beginPath();ctx.roundRect(px,py,pw,ph,8);ctx.clip();const scale=Math.max(pw/photo.width,ph/photo.height),sw=pw/scale,sh=ph/scale;ctx.drawImage(photo,(photo.width-sw)/2,(photo.height-sh)/2,sw,sh,px,py,pw,ph);ctx.restore();}
  else{ctx.fillStyle="#24483c";ctx.beginPath();ctx.roundRect(px,py,pw,ph,8);ctx.fill();text("YOUR PORTRAIT",px+pw/2,py+ph/2,"700 20px 'DM Sans'","#c5a45c","center");}
  ctx.strokeStyle=C.gold;ctx.lineWidth=4;ctx.strokeRect(px,py,pw,ph);ctx.strokeStyle="rgba(246,242,232,.65)";ctx.lineWidth=1;ctx.strokeRect(px+11,py+11,pw-22,ph-22);
- // Personalised attendee details
- ctx.fillStyle=C.cream;ctx.fillRect(76,820,928,135);ctx.fillStyle=C.gold;ctx.fillRect(76,820,9,135);
- const attendee=(nameInput.value.trim()||"YOUR NAME").toUpperCase();text(attendee,112,882,`700 ${fit(attendee,840,43)}px 'DM Sans'`,C.deep);
- text((locationInput.value.trim()||"YOUR LOCATION").toUpperCase(),114,922,"600 18px 'DM Sans'","#77735f");
+ // Location is presented as the attendee's point of origin
+ ctx.fillStyle=C.cream;ctx.fillRect(76,820,928,92);ctx.fillStyle=C.gold;ctx.fillRect(76,820,9,92);
+ text("ATTENDING FROM",110,855,"700 13px 'DM Sans'',"#8a7545");
+ const origin=(locationInput.value.trim()||"YOUR LOCATION").toUpperCase();
+ text(origin,110,889,`700 ${fit(origin,850,29,18)}px 'DM Sans'`,C.deep);
  // Date and venue are large, high-contrast event information
  text("DATE",76,1018,"700 13px 'DM Sans'","#d7c28f");
  text(config.date,76,1064,`800 ${fit(config.date,925,34,24)}px 'DM Sans'`,C.cream);
