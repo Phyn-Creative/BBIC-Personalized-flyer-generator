@@ -22,7 +22,7 @@
  text("GATHER",76,416,"italic 700 104px 'Playfair Display'",C.gold);
  text("ONE PEOPLE. ONE PURPOSE.",80,456,"600 16px 'DM Sans'","#d7ded6");
  // Portrait sits in its own right-hand column and never crosses the theme
- const px=625,py=250,pw=379,ph=520;
+ const px=560,py=225,pw=444,ph=570;
  if(photo){ctx.save();ctx.beginPath();ctx.rect(px,py,pw,ph);ctx.clip();const scale=Math.max(pw/photo.width,ph/photo.height),sw=pw/scale,sh=ph/scale;ctx.drawImage(photo,(photo.width-sw)/2,(photo.height-sh)/2,sw,sh,px,py,pw,ph);ctx.restore();}
  else{ctx.fillStyle="#24483c";ctx.beginPath();ctx.rect(px,py,pw,ph);ctx.fill();text("YOUR PORTRAIT",px+pw/2,py+ph/2,"700 20px 'DM Sans'","#c5a45c","center");}
  ctx.strokeStyle=C.gold;ctx.lineWidth=4;ctx.strokeRect(px,py,pw,ph);ctx.strokeStyle="rgba(246,242,232,.65)";ctx.lineWidth=1;ctx.strokeRect(px+11,py+11,pw-22,ph-22);
