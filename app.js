@@ -12,10 +12,10 @@
  // restrained architectural framing
  ctx.strokeStyle="rgba(197,164,92,.22)";ctx.lineWidth=2;for(let r=150;r<420;r+=48){ctx.beginPath();ctx.arc(1050,260,r,0,Math.PI*2);ctx.stroke();}
  ctx.strokeStyle=C.gold;ctx.lineWidth=2;ctx.strokeRect(28,28,1024,1294);ctx.strokeStyle="rgba(246,242,232,.25)";ctx.lineWidth=1;ctx.strokeRect(42,42,996,1266);
- // Church identity is the first thing guests see
- text(config.churchName,76,96,`800 ${fit(config.churchName,928,40,28)}px 'DM Sans'`,C.cream);
- text(config.churchSubname,77,123,"700 19px 'DM Sans'","#d6c89f");
- ctx.fillStyle=C.gold;ctx.fillRect(76,151,72,4);
+ // Church identity is presented as a prominent, centered masthead
+ text(config.churchName,540,105,`800 ${fit(config.churchName,900,58,44)}px 'Playfair Display'`,C.cream,"center");
+ text(config.churchSubname,540,145,`800 ${fit(config.churchSubname,900,29,23)}px 'DM Sans'`,C.gold,"center");
+ ctx.fillStyle=C.gold;ctx.fillRect(455,165,170,4);
  // Programme and theme have their own clear space, separate from portrait
  text(config.programmeName,76,208,"700 21px 'DM Sans'",C.gold);
  text("TIME TO",76,324,"700 88px 'DM Sans'",C.cream);
