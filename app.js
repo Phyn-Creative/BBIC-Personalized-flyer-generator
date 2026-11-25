@@ -16,10 +16,24 @@
  text(config.churchName,540,105,`800 ${fit(config.churchName,900,58,44)}px 'Playfair Display'`,C.cream,"center");
  text(config.churchSubname,540,145,`800 ${fit(config.churchSubname,900,29,23)}px 'DM Sans'`,C.gold,"center");
  ctx.fillStyle=C.gold;ctx.fillRect(455,165,170,4);
- // Programme and theme have their own clear space, separate from portrait
- text(config.programmeName,76,208,"700 21px 'DM Sans'",C.gold);
- text("TIME TO",76,324,"700 88px 'DM Sans'",C.cream);
- text("GATHER",76,416,"italic 700 104px 'Playfair Display'",C.gold);
+ // Theme marker and clock establish a clear visual cue for the headline
+ ctx.fillStyle="rgba(197,164,92,.16)";ctx.fillRect(76,220,112,34);
+ ctx.strokeStyle=C.gold;ctx.lineWidth=1.5;ctx.strokeRect(76,220,112,34);
+ text("THEME",132,243,"700 16px 'DM Sans'",C.gold,"center");
+ ctx.fillStyle=C.gold;ctx.fillRect(198,235,76,2);
+ ctx.beginPath();ctx.arc(278,236,4,0,Math.PI*2);ctx.fill();
+ // Larger, aligned two-line theme headline
+ text("TIME TO",76,358,`700 ${fit("TIME TO",440,98,82)}px 'DM Sans'`,C.cream);
+ text("GATHER",76,466,`italic 700 ${fit("GATHER",440,116,96)}px 'Playfair Display'`,C.gold);
+ // Fine-line clock illustration beside the headline
+ const cx=492,cy=350,cr=31;
+ ctx.strokeStyle=C.gold;ctx.lineWidth=3;ctx.beginPath();ctx.arc(cx,cy,cr,0,Math.PI*2);ctx.stroke();
+ ctx.fillStyle=C.cream;ctx.beginPath();ctx.arc(cx,cy,3,0,Math.PI*2);ctx.fill();
+ ctx.strokeStyle=C.cream;ctx.lineWidth=3;ctx.lineCap="round";
+ ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx,cy-17);ctx.moveTo(cx,cy);ctx.lineTo(cx+14,cy+8);ctx.stroke();
+ ctx.lineCap="butt";
+ // Subtle clock markers
+ for(let a=0;a<12;a++){const ang=a*Math.PI/6;ctx.beginPath();ctx.moveTo(cx+Math.sin(ang)*24,cy-Math.cos(ang)*24);ctx.lineTo(cx+Math.sin(ang)*27,cy-Math.cos(ang)*27);ctx.stroke();}
  
  // Portrait sits in its own right-hand column and never crosses the theme
  const px=560,py=225,pw=444,ph=570;
