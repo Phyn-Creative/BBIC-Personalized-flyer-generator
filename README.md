@@ -13,14 +13,13 @@ A static, mobile-friendly web app that lets attendees create a personalised even
 Edit `event-config.js`. Change the church/programme name, theme, date, venue, address and colour palette. The generator code in `app.js` can stay the same for ordinary text and colour changes.
 
 ## Run locally
-Open `index.html` in a modern browser. For best results, use a local static server or deploy to Cloudflare Pages.
+Open `index.html` in a modern browser. For best results, use a local static server or deploy to Cloudflare.
 
-## Deploy free with GitHub + Cloudflare Pages
-1. Upload all files in this folder to the repository root.
-2. In Cloudflare, open Workers & Pages → Create → Pages → Connect to Git.
-3. Select this repository.
-4. Framework preset: None. Build command: leave blank. Build output directory: `/` (or `.` if requested by the dashboard).
-5. Deploy.
+## Deploy with GitHub + Cloudflare Workers
+1. Keep the app files in the repository root.
+2. In Cloudflare, open Workers & Pages and select the existing `bbic-personalized-flyer-generator` Worker.
+3. Under Settings → Builds, connect this repository and select the `main` production branch.
+4. Push a commit to `main` to trigger a build and deployment. Check the Worker’s Deployments tab for the build result.
 
 No database, login, paid API or server-side photo storage is required. Photos are processed locally in the attendee's browser.
 
