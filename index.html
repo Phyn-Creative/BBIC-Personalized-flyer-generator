@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102b25">
+  <meta name="description" content="Create your personalised Covenant Summit 2026 attendance flyer.">
+  <title>Covenant Summit | Personalised Flyer</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Covenant Summit home">
+        <span class="brand-mark">✦</span>
+        <span><strong id="brandChurch">BEAUTY &amp; BANDS</strong><small>INTERNATIONAL CHURCH</small></span>
+      </a>
+      <span class="top-note">PERSONALISED FLYER</span>
+    </header>
+    <section class="intro">
+      <p class="eyebrow">YOU ARE INVITED</p>
+      <h1>Make it personal.</h1>
+      <p class="intro-copy">Create your own Covenant Summit flyer in a few simple steps. Add your photo, enter your details, then download and share.</p>
+    </section>
+    <section class="workspace">
+      <form class="form-panel" id="flyerForm">
+        <div class="section-heading"><span class="step">01</span><div><h2>Your details</h2><p>Tell us who is gathering.</p></div></div>
+        <label class="upload-box" for="photoInput" id="uploadBox">
+          <span class="upload-icon">＋</span><strong id="uploadTitle">Upload your photograph</strong>
+          <small id="uploadHint">Choose a clear portrait photo · JPG, PNG or WEBP</small>
+          <input id="photoInput" type="file" accept="image/png,image/jpeg,image/webp">
+        </label>
+        <label class="field-label" for="nameInput">Full name</label>
+        <input class="text-input" id="nameInput" name="name" maxlength="54" placeholder="Enter your full name" autocomplete="name" required>
+        <label class="field-label" for="locationInput">Location</label>
+        <input class="text-input" id="locationInput" name="location" maxlength="54" placeholder="e.g. Ibadan, Oyo State" autocomplete="address-level2" required>
+        <button class="primary-button" type="button" id="previewButton">Generate my flyer <span>↗</span></button>
+        <p class="privacy-note">Your photograph is processed in your browser. It is not uploaded to a server.</p>
+        <p class="error" id="errorMessage" role="alert"></p>
+      </form>
+      <section class="preview-panel" aria-label="Flyer preview">
+        <div class="preview-heading"><div><span class="step">02</span><strong>Your flyer</strong></div><span class="live-label"><i></i> LIVE PREVIEW</span></div>
+        <div class="poster-wrap">
+          <canvas id="flyerCanvas" width="1080" height="1350" aria-label="Personalised Covenant Summit flyer preview"></canvas>
+          <div class="empty-overlay" id="emptyOverlay"><span>✦</span><strong>Your flyer will appear here</strong><small>Upload a photo and enter your details</small></div>
+        </div>
+        <div class="download-actions">
+          <button class="download-button" type="button" id="downloadButton" disabled>Download flyer <span>↓</span></button>
+          <button class="share-button" type="button" id="shareButton" disabled>Share</button>
+        </div>
+        <p class="preview-footnote">High-resolution image · 1080 × 1350 px</p>
+      </section>
+    </section>
+    <footer class="footer"><span>TIME TO GATHER</span><span>COVENANT SUMMIT 2026</span></footer>
+  </main>
+  <script src="event-config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
