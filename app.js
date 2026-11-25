@@ -9,27 +9,36 @@
  function draw(){
  const C=config.colors;ctx.clearRect(0,0,1080,1350);
  const bg=ctx.createLinearGradient(0,0,1080,1350);bg.addColorStop(0,C.deep);bg.addColorStop(.58,"#173b31");bg.addColorStop(1,"#0b211c");ctx.fillStyle=bg;ctx.fillRect(0,0,1080,1350);
- // atmospheric shapes and fine-line framing
- ctx.strokeStyle="rgba(197,164,92,.25)";ctx.lineWidth=2;for(let r=170;r<470;r+=42){ctx.beginPath();ctx.arc(1000,280,r,0,Math.PI*2);ctx.stroke();}
+ // restrained architectural framing
+ ctx.strokeStyle="rgba(197,164,92,.22)";ctx.lineWidth=2;for(let r=150;r<420;r+=48){ctx.beginPath();ctx.arc(1050,260,r,0,Math.PI*2);ctx.stroke();}
  ctx.strokeStyle=C.gold;ctx.lineWidth=2;ctx.strokeRect(28,28,1024,1294);ctx.strokeStyle="rgba(246,242,232,.25)";ctx.lineWidth=1;ctx.strokeRect(42,42,996,1266);
- text(config.churchName,76,91,"800 23px 'DM Sans'",C.cream);text(config.churchSubname,77,119,"600 13px 'DM Sans'","#c8c7b8");
- ctx.textAlign="right";text("COVENANT SUMMIT",1004,91,"700 18px 'DM Sans'",C.gold,"right");text("2026",1004,119,"700 14px 'DM Sans'","#e8ddc2","right");ctx.textAlign="left";
- ctx.fillStyle=C.gold;ctx.fillRect(76,151,58,4);text("A DIVINE GATHERING",76,190,"700 15px 'DM Sans'","#d9c99f");
- text("TIME TO",76,282,"700 91px 'DM Sans'",C.cream);text("GATHER",76,374,"italic 700 104px 'Playfair Display'",C.gold);
- text("ONE PEOPLE. ONE PURPOSE.",80,414,"600 14px 'DM Sans'","#d7ded6");
- // portrait panel on right, overlaps headline
- if(photo){ctx.save();ctx.beginPath();ctx.roundRect(390,245,614,650,8);ctx.clip();const scale=Math.max(614/photo.width,650/photo.height),sw=614/scale,sh=650/scale;ctx.drawImage(photo,(photo.width-sw)/2,(photo.height-sh)/2,sw,sh,390,245,614,650);const shade=ctx.createLinearGradient(390,650,390,895);shade.addColorStop(0,"rgba(8,24,20,0)");shade.addColorStop(1,"rgba(8,24,20,.38)");ctx.fillStyle=shade;ctx.fillRect(390,245,614,650);ctx.restore();}
- else{ctx.fillStyle="#24483c";ctx.beginPath();ctx.roundRect(390,245,614,650,8);ctx.fill();text("YOUR PORTRAIT",697,580,"700 24px 'DM Sans'","#c5a45c","center");}
- ctx.strokeStyle=C.gold;ctx.lineWidth=4;ctx.strokeRect(390,245,614,650);ctx.strokeStyle="rgba(246,242,232,.65)";ctx.lineWidth=1;ctx.strokeRect(402,257,590,626);
- // attendee identity strip
- ctx.fillStyle=C.cream;ctx.fillRect(76,928,928,155);ctx.fillStyle=C.gold;ctx.fillRect(76,928,9,155);
- const attendee=(nameInput.value.trim()||"YOUR NAME").toUpperCase();text(attendee,112,1000,`700 ${fit(attendee,840,47)}px 'DM Sans'`,C.deep);
- text((locationInput.value.trim()||"YOUR LOCATION").toUpperCase(),114,1044,"600 18px 'DM Sans'","#77735f");
- // event details footer
- text(config.date,76,1152,"800 30px 'DM Sans'",C.gold);text(config.venueName,76,1200,"700 17px 'DM Sans'",C.cream);
- const addr=config.venueAddress;ctx.font="500 15px 'DM Sans'";text(addr,76,1232,`500 ${fit(addr,925,15,12)}px 'DM Sans'`,"#d0d6cf");
- ctx.fillStyle="rgba(197,164,92,.25)";ctx.fillRect(76,1262,928,1);text("YOU ARE INVITED. COME EXPECTANT.",76,1295,"700 14px 'DM Sans'","#e2d4ad");
- text("BEAUTY & BANDS INTERNATIONAL CHURCH",1004,1295,"600 10px 'DM Sans'","#b8c5bc","right");ctx.textAlign="left";
+ // Church identity is the first thing guests see
+ text(config.churchName,76,91,"800 31px 'DM Sans'",C.cream);
+ text(config.churchSubname,77,123,"700 19px 'DM Sans'","#d6c89f");
+ ctx.fillStyle=C.gold;ctx.fillRect(76,151,72,4);
+ // Programme and theme have their own clear space, separate from portrait
+ text(config.programmeName,76,208,"700 21px 'DM Sans'",C.gold);
+ text("TIME TO",76,324,"700 88px 'DM Sans'",C.cream);
+ text("GATHER",76,416,"italic 700 104px 'Playfair Display'",C.gold);
+ text("ONE PEOPLE. ONE PURPOSE.",80,456,"600 16px 'DM Sans'","#d7ded6");
+ // Portrait sits in its own right-hand column and never crosses the theme
+ const px=625,py=250,pw=379,ph=520;
+ if(photo){ctx.save();ctx.beginPath();ctx.roundRect(px,py,pw,ph,8);ctx.clip();const scale=Math.max(pw/photo.width,ph/photo.height),sw=pw/scale,sh=ph/scale;ctx.drawImage(photo,(photo.width-sw)/2,(photo.height-sh)/2,sw,sh,px,py,pw,ph);ctx.restore();}
+ else{ctx.fillStyle="#24483c";ctx.beginPath();ctx.roundRect(px,py,pw,ph,8);ctx.fill();text("YOUR PORTRAIT",px+pw/2,py+ph/2,"700 20px 'DM Sans'","#c5a45c","center");}
+ ctx.strokeStyle=C.gold;ctx.lineWidth=4;ctx.strokeRect(px,py,pw,ph);ctx.strokeStyle="rgba(246,242,232,.65)";ctx.lineWidth=1;ctx.strokeRect(px+11,py+11,pw-22,ph-22);
+ // Personalised attendee details
+ ctx.fillStyle=C.cream;ctx.fillRect(76,820,928,135);ctx.fillStyle=C.gold;ctx.fillRect(76,820,9,135);
+ const attendee=(nameInput.value.trim()||"YOUR NAME").toUpperCase();text(attendee,112,882,`700 ${fit(attendee,840,43)}px 'DM Sans'`,C.deep);
+ text((locationInput.value.trim()||"YOUR LOCATION").toUpperCase(),114,922,"600 18px 'DM Sans'","#77735f");
+ // Date and venue are large, high-contrast event information
+ text("DATE",76,1018,"700 13px 'DM Sans'","#d7c28f");
+ text(config.date,76,1064,`800 ${fit(config.date,925,34,24)}px 'DM Sans'`,C.cream);
+ ctx.fillStyle="rgba(197,164,92,.55)";ctx.fillRect(76,1090,928,2);
+ text("VENUE",76,1130,"700 13px 'DM Sans'","#d7c28f");
+ text(config.venueName,76,1170,`800 ${fit(config.venueName,925,23,16)}px 'DM Sans'`,C.cream);
+ const addr=config.venueAddress;text(addr,76,1208,`500 ${fit(addr,925,18,13)}px 'DM Sans'`,"#d0d6cf");
+ ctx.fillStyle="rgba(197,164,92,.25)";ctx.fillRect(76,1242,928,1);
+ text("YOU ARE INVITED. COME EXPECTANT.",76,1280,"700 15px 'DM Sans'","#e2d4ad");
  }
  function err(message){errorMessage.textContent=message;}
  function setReady(){generated=true;emptyOverlay.hidden=true;downloadButton.disabled=shareButton.disabled=whatsappButton.disabled=false;}
