@@ -1,129 +1,47 @@
 (() => {
-  const config = window.EVENT_CONFIG;
-  const canvas = document.getElementById("flyerCanvas");
-  const ctx = canvas.getContext("2d");
-  const photoInput = document.getElementById("photoInput");
-  const nameInput = document.getElementById("nameInput");
-  const locationInput = document.getElementById("locationInput");
-  const previewButton = document.getElementById("previewButton");
-  const downloadButton = document.getElementById("downloadButton");
-  const shareButton = document.getElementById("shareButton");
-  const emptyOverlay = document.getElementById("emptyOverlay");
-  const errorMessage = document.getElementById("errorMessage");
-  let photo = null;
-  let generated = false;
-
-  document.getElementById("brandChurch").textContent = config.churchName;
-  document.querySelector(".brand small").textContent = config.churchSubname;
-
-  function roundedRect(x,y,w,h,r,fill,stroke=null,line=1){
-    ctx.beginPath(); ctx.roundRect(x,y,w,h,r);
-    if(fill){ctx.fillStyle=fill;ctx.fill();}
-    if(stroke){ctx.lineWidth=line;ctx.strokeStyle=stroke;ctx.stroke();}
-  }
-  function fitText(text,maxWidth,fontSize,fontFamily,weight="600"){
-    let size=fontSize;
-    do { ctx.font=`${weight} ${size}px ${fontFamily}`; size-=1; }
-    while(ctx.measureText(text).width>maxWidth && size>18);
-    return size;
-  }
-  function drawPhoto(){
-    const x=76,y=240,w=928,h=690;
-    ctx.save();
-    ctx.beginPath();ctx.roundRect(x,y,w,h,8);ctx.clip();
-    const scale=Math.max(w/photo.width,h/photo.height);
-    const sw=w/scale,sh=h/scale;
-    const sx=(photo.width-sw)/2,sy=(photo.height-sh)/2;
-    ctx.drawImage(photo,sx,sy,sw,sh,x,y,w,h);
-    const shade=ctx.createLinearGradient(0,y+440,0,y+h);
-    shade.addColorStop(0,"rgba(8,24,20,0)");
-    shade.addColorStop(1,"rgba(8,24,20,.24)");
-    ctx.fillStyle=shade;ctx.fillRect(x,y,w,h);
-    ctx.restore();
-    roundedRect(x,y,w,h,8,null,"#c5a45c",3);
-  }
-  function draw(){
-    const C=config.colors;
-    ctx.clearRect(0,0,1080,1350);
-    ctx.fillStyle=C.cream;ctx.fillRect(0,0,1080,1350);
-    ctx.strokeStyle=C.gold;ctx.lineWidth=3;ctx.strokeRect(22,22,1036,1306);
-    ctx.strokeStyle="#d8c89e";ctx.lineWidth=1;ctx.strokeRect(34,34,1012,1282);
-    ctx.fillStyle=C.deep;ctx.font="700 24px 'DM Sans'";ctx.fillText(config.churchName,76,92);
-    ctx.fillStyle="#6f745f";ctx.font="600 15px 'DM Sans'";ctx.fillText(config.churchSubname,77,119);
-    ctx.textAlign="right";ctx.fillStyle=C.gold;
-    ctx.font="700 31px 'DM Sans'";ctx.fillText("COVENANT",1004,83);
-    ctx.font="700 22px 'DM Sans'";ctx.fillText("SUMMIT 2026",1004,112);
-    ctx.textAlign="left";
-    ctx.strokeStyle=C.gold;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(76,151);ctx.lineTo(1004,151);ctx.stroke();
-    ctx.fillStyle=C.deep;ctx.font="600 21px 'DM Sans'";ctx.textAlign="center";
-    ctx.fillText("A DIVINE GATHERING",540,198);
-    ctx.fillStyle=C.gold;ctx.font="700 43px 'Playfair Display'";ctx.fillText(config.theme,540,228);
-    ctx.textAlign="left";
-    if(photo) drawPhoto();
-    else {
-      roundedRect(76,240,928,690,8,"#e8e1d1","#c5a45c",3);
-      ctx.fillStyle="#a58b54";ctx.textAlign="center";ctx.font="600 26px 'DM Sans'";
-      ctx.fillText("YOUR PHOTOGRAPH",540,580);ctx.textAlign="left";
-    }
-    const name=(nameInput.value||"YOUR NAME").trim().toUpperCase();
-    const location=(locationInput.value||"YOUR LOCATION").trim();
-    ctx.textAlign="center";ctx.fillStyle=C.deep;
-    const nsize=fitText(name,920,46,"'Playfair Display'","700");
-    ctx.font=`700 ${nsize}px 'Playfair Display'`;ctx.fillText(name,540,1000);
-    ctx.fillStyle="#7a6b49";ctx.font="500 23px 'DM Sans'";ctx.fillText(location,540,1043);
-    ctx.strokeStyle="#d8c89e";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(180,1080);ctx.lineTo(900,1080);ctx.stroke();
-    ctx.fillStyle=C.gold;ctx.font="700 32px 'DM Sans'";ctx.fillText(config.date,540,1140);
-    ctx.fillStyle=C.deep;ctx.font="700 19px 'DM Sans'";ctx.fillText(config.venueName,540,1192);
-    ctx.fillStyle="#5d675e";ctx.font="500 17px 'DM Sans'";
-    const addrSize=fitText(config.venueAddress,900,17,"'DM Sans'","500");
-    ctx.font=`500 ${addrSize}px 'DM Sans'`;ctx.fillText(config.venueAddress,540,1224);
-    ctx.fillStyle=C.gold;ctx.font="600 16px 'Playfair Display'";
-    ctx.fillText("WE LOOK FORWARD TO GATHERING WITH YOU",540,1275);
-    ctx.textAlign="left";
-  }
-  function showError(msg){errorMessage.textContent=msg;}
-  photoInput.addEventListener("change",()=>{
-    showError("");
-    const file=photoInput.files && photoInput.files[0];
-    if(!file)return;
-    if(!file.type.startsWith("image/")){showError("Please choose an image file.");return;}
-    if(file.size>12*1024*1024){showError("Please choose a photo smaller than 12 MB.");return;}
-    const url=URL.createObjectURL(file);
-    const img=new Image();
-    img.onload=()=>{photo=img;document.getElementById("uploadTitle").textContent=file.name;document.getElementById("uploadHint").textContent="Photo added successfully";renderPreview();URL.revokeObjectURL(url);};
-    img.onerror=()=>showError("We couldn't read that image. Please try another photo.");
-    img.src=url;
-  });
-  function renderPreview(){
-    draw();generated=true;emptyOverlay.hidden=true;
-    downloadButton.disabled=false;shareButton.disabled=false;
-  }
-  previewButton.addEventListener("click",()=>{
-    showError("");
-    if(!photo){showError("Please upload your photograph first.");return;}
-    if(!nameInput.value.trim()){showError("Please enter your full name.");nameInput.focus();return;}
-    if(!locationInput.value.trim()){showError("Please enter your location.");locationInput.focus();return;}
-    renderPreview();
-  });
-  [nameInput,locationInput].forEach(el=>el.addEventListener("input",()=>{if(generated)draw();}));
-  downloadButton.addEventListener("click",()=>{
-    if(!generated)return;
-    const link=document.createElement("a");
-    link.download=`Covenant-Summit-2026-${(nameInput.value.trim()||"attendee").replace(/[^a-z0-9]+/gi,"-")}.png`;
-    link.href=canvas.toDataURL("image/png");link.click();
-  });
-  shareButton.addEventListener("click",async()=>{
-    if(!generated)return;
-    canvas.toBlob(async blob=>{
-      if(!blob)return;
-      const file=new File([blob],"covenant-summit-flyer.png",{type:"image/png"});
-      if(navigator.canShare && navigator.canShare({files:[file]})){
-        try{await navigator.share({files:[file],title:config.programmeName,text:`${nameInput.value} — ${config.theme}`});}
-        catch(e){if(e.name!=="AbortError")showError("Sharing was not available. Please download your flyer instead.");}
-      }else{
-        showError("Direct image sharing isn't supported on this browser. Please download your flyer and share it from your gallery.");
-      }
-    },"image/png");
-  });
-  draw();
+ const config=window.EVENT_CONFIG,canvas=document.getElementById("flyerCanvas"),ctx=canvas.getContext("2d");
+ const photoInput=document.getElementById("photoInput"),nameInput=document.getElementById("nameInput"),locationInput=document.getElementById("locationInput");
+ const previewButton=document.getElementById("previewButton"),downloadButton=document.getElementById("downloadButton"),shareButton=document.getElementById("shareButton"),whatsappButton=document.getElementById("whatsappButton"),emptyOverlay=document.getElementById("emptyOverlay"),errorMessage=document.getElementById("errorMessage");
+ let photo=null,generated=false;
+ document.getElementById("brandChurch").textContent=config.churchName;document.querySelector(".brand small").textContent=config.churchSubname;
+ const text=(value,x,y,font,color,align="left")=>{ctx.font=font;ctx.fillStyle=color;ctx.textAlign=align;ctx.fillText(value,x,y)};
+ function fit(value,max,font,min=18){let s=font;ctx.font=`700 ${s}px 'DM Sans'`;while(ctx.measureText(value).width>max&&s>min){s--;ctx.font=`700 ${s}px 'DM Sans'`;}return s;}
+ function draw(){
+ const C=config.colors;ctx.clearRect(0,0,1080,1350);
+ const bg=ctx.createLinearGradient(0,0,1080,1350);bg.addColorStop(0,C.deep);bg.addColorStop(.58,"#173b31");bg.addColorStop(1,"#0b211c");ctx.fillStyle=bg;ctx.fillRect(0,0,1080,1350);
+ // atmospheric shapes and fine-line framing
+ ctx.strokeStyle="rgba(197,164,92,.25)";ctx.lineWidth=2;for(let r=170;r<470;r+=42){ctx.beginPath();ctx.arc(1000,280,r,0,Math.PI*2);ctx.stroke();}
+ ctx.strokeStyle=C.gold;ctx.lineWidth=2;ctx.strokeRect(28,28,1024,1294);ctx.strokeStyle="rgba(246,242,232,.25)";ctx.lineWidth=1;ctx.strokeRect(42,42,996,1266);
+ text(config.churchName,76,91,"800 23px 'DM Sans'",C.cream);text(config.churchSubname,77,119,"600 13px 'DM Sans'","#c8c7b8");
+ ctx.textAlign="right";text("COVENANT SUMMIT",1004,91,"700 18px 'DM Sans'",C.gold,"right");text("2026",1004,119,"700 14px 'DM Sans'","#e8ddc2","right");ctx.textAlign="left";
+ ctx.fillStyle=C.gold;ctx.fillRect(76,151,58,4);text("A DIVINE GATHERING",76,190,"700 15px 'DM Sans'","#d9c99f");
+ text("TIME TO",76,282,"700 91px 'DM Sans'",C.cream);text("GATHER",76,374,"italic 700 104px 'Playfair Display'",C.gold);
+ text("ONE PEOPLE. ONE PURPOSE.",80,414,"600 14px 'DM Sans'","#d7ded6");
+ // portrait panel on right, overlaps headline
+ if(photo){ctx.save();ctx.beginPath();ctx.roundRect(390,245,614,650,8);ctx.clip();const scale=Math.max(614/photo.width,650/photo.height),sw=614/scale,sh=650/scale;ctx.drawImage(photo,(photo.width-sw)/2,(photo.height-sh)/2,sw,sh,390,245,614,650);const shade=ctx.createLinearGradient(390,650,390,895);shade.addColorStop(0,"rgba(8,24,20,0)");shade.addColorStop(1,"rgba(8,24,20,.38)");ctx.fillStyle=shade;ctx.fillRect(390,245,614,650);ctx.restore();}
+ else{ctx.fillStyle="#24483c";ctx.beginPath();ctx.roundRect(390,245,614,650,8);ctx.fill();text("YOUR PORTRAIT",697,580,"700 24px 'DM Sans'","#c5a45c","center");}
+ ctx.strokeStyle=C.gold;ctx.lineWidth=4;ctx.strokeRect(390,245,614,650);ctx.strokeStyle="rgba(246,242,232,.65)";ctx.lineWidth=1;ctx.strokeRect(402,257,590,626);
+ // attendee identity strip
+ ctx.fillStyle=C.cream;ctx.fillRect(76,928,928,155);ctx.fillStyle=C.gold;ctx.fillRect(76,928,9,155);
+ const attendee=(nameInput.value.trim()||"YOUR NAME").toUpperCase();text(attendee,112,1000,`700 ${fit(attendee,840,47)}px 'DM Sans'`,C.deep);
+ text((locationInput.value.trim()||"YOUR LOCATION").toUpperCase(),114,1044,"600 18px 'DM Sans'","#77735f");
+ // event details footer
+ text(config.date,76,1152,"800 30px 'DM Sans'",C.gold);text(config.venueName,76,1200,"700 17px 'DM Sans'",C.cream);
+ const addr=config.venueAddress;ctx.font="500 15px 'DM Sans'";text(addr,76,1232,`500 ${fit(addr,925,15,12)}px 'DM Sans'`,"#d0d6cf");
+ ctx.fillStyle="rgba(197,164,92,.25)";ctx.fillRect(76,1262,928,1);text("YOU ARE INVITED. COME EXPECTANT.",76,1295,"700 14px 'DM Sans'","#e2d4ad");
+ text("BEAUTY & BANDS INTERNATIONAL CHURCH",1004,1295,"600 10px 'DM Sans'","#b8c5bc","right");ctx.textAlign="left";
+ }
+ function err(message){errorMessage.textContent=message;}
+ function setReady(){generated=true;emptyOverlay.hidden=true;downloadButton.disabled=shareButton.disabled=whatsappButton.disabled=false;}
+ function render(){draw();setReady();}
+ function flyerBlob(){return new Promise(resolve=>canvas.toBlob(resolve,"image/png"));}
+ function filename(){return `Covenant-Summit-2026-${(nameInput.value.trim()||"attendee").replace(/[^a-z0-9]+/gi,"-")}.png`;}
+ photoInput.addEventListener("change",()=>{err("");const file=photoInput.files&&photoInput.files[0];if(!file)return;if(!file.type.startsWith("image/")){err("Please choose an image file.");return;}if(file.size>12*1024*1024){err("Please choose a photo smaller than 12 MB.");return;}const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{photo=img;document.getElementById("uploadTitle").textContent=file.name;document.getElementById("uploadHint").textContent="Your portrait is ready";render();URL.revokeObjectURL(url);};img.onerror=()=>{err("We couldn't read that image. Please try another photo.");URL.revokeObjectURL(url);};img.src=url;});
+ previewButton.addEventListener("click",()=>{err("");if(!photo){err("Please add your portrait first.");photoInput.focus();return;}if(!nameInput.value.trim()){err("Please enter your name.");nameInput.focus();return;}if(!locationInput.value.trim()){err("Please enter your location.");locationInput.focus();return;}render();});
+ [nameInput,locationInput].forEach(el=>el.addEventListener("input",()=>{if(generated)draw();}));
+ downloadButton.addEventListener("click",()=>{if(!generated)return;const a=document.createElement("a");a.download=filename();a.href=canvas.toDataURL("image/png");a.click();});
+ shareButton.addEventListener("click",async()=>{if(!generated)return;err("");const blob=await flyerBlob();if(!blob){err("Could not prepare the flyer. Please download it instead.");return;}const file=new File([blob],filename(),{type:"image/png"});if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){try{await navigator.share({files:[file],title:config.programmeName,text:`I'm attending ${config.programmeName} — ${config.theme}! Join me, ${nameInput.value}, from ${locationInput.value}.`});}catch(e){if(e.name!=="AbortError")err("Sharing was interrupted. You can still download the PNG.");}}else{err("This browser cannot share image files directly. Download the PNG, then attach it in your social app.");document.getElementById("shareNote").textContent="Tip: Download the PNG, open WhatsApp, Instagram, Facebook or any other social app, and attach the image from your gallery."; }});
+ whatsappButton.addEventListener("click",async()=>{if(!generated)return;const blob=await flyerBlob();if(!blob)return;const file=new File([blob],filename(),{type:"image/png"});const message=`I'm attending ${config.programmeName} — ${config.theme}! Join me from ${locationInput.value}. ${config.date} at ${config.venueName}.`;if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:config.programmeName,text:message});return;}catch(e){if(e.name==="AbortError")return;}}
+ const a=document.createElement("a");a.href="https://wa.me/?text="+encodeURIComponent(message+" I'll attach my personalised flyer.");a.target="_blank";a.rel="noopener";a.click();err("WhatsApp opened with your invitation message. Attach the downloaded flyer image before sending.");});
+ draw();
 })();
