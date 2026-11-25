@@ -28,8 +28,8 @@
  ctx.strokeStyle=C.gold;ctx.lineWidth=4;ctx.strokeRect(px,py,pw,ph);ctx.strokeStyle="rgba(246,242,232,.65)";ctx.lineWidth=1;ctx.strokeRect(px+11,py+11,pw-22,ph-22);
  // Personalised attendee details
  ctx.fillStyle=C.cream;ctx.fillRect(76,820,928,135);ctx.fillStyle=C.gold;ctx.fillRect(76,820,9,135);
- const attendee=((nameInput.value.trim()||"YOUR NAME")+" FROM").toUpperCase();text(attendee,112,882,`700 ${fit(attendee,840,43)}px 'DM Sans'`,C.deep);
- const attendeeLocation=((locationInput.value.trim()||"YOUR LOCATION")+" IS ATTENDING").toUpperCase();text(attendeeLocation,114,922,`600 ${fit(attendeeLocation,850,18,13)}px 'DM Sans'`,"#77735f");
+ const attendee=(nameInput.value.trim()||"YOUR NAME").toUpperCase()+" from";text(attendee,112,882,`700 ${fit(attendee,840,43)}px 'DM Sans'`,C.deep);
+ const attendeeLocation=(locationInput.value.trim()||"YOUR LOCATION").toUpperCase()+" is attending";text(attendeeLocation,114,922,`600 ${fit(attendeeLocation,850,18,13)}px 'DM Sans'`,"#77735f");
  // Date and venue are large, high-contrast event information
  text("DATE",76,1018,"700 13px 'DM Sans'","#d7c28f");
  text(config.date,76,1064,`800 ${fit(config.date,925,34,24)}px 'DM Sans'`,C.cream);
