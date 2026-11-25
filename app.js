@@ -27,8 +27,8 @@
  text("AND I LOOK FORWARD TO BEING THERE.",76,565,"500 14px 'DM Sans'',"#d7ded6");
  // Portrait sits in its own right-hand column and never crosses the theme
  const px=625,py=250,pw=379,ph=520;
- if(photo){ctx.save();ctx.beginPath();ctx.roundRect(px,py,pw,ph,8);ctx.clip();const scale=Math.max(pw/photo.width,ph/photo.height),sw=pw/scale,sh=ph/scale;ctx.drawImage(photo,(photo.width-sw)/2,(photo.height-sh)/2,sw,sh,px,py,pw,ph);ctx.restore();}
- else{ctx.fillStyle="#24483c";ctx.beginPath();ctx.roundRect(px,py,pw,ph,8);ctx.fill();text("YOUR PORTRAIT",px+pw/2,py+ph/2,"700 20px 'DM Sans'","#c5a45c","center");}
+ if(photo){ctx.save();ctx.beginPath();ctx.rect(px,py,pw,ph);ctx.clip();const scale=Math.max(pw/photo.width,ph/photo.height),sw=pw/scale,sh=ph/scale;ctx.drawImage(photo,(photo.width-sw)/2,(photo.height-sh)/2,sw,sh,px,py,pw,ph);ctx.restore();}
+ else{ctx.fillStyle="#24483c";ctx.beginPath();ctx.rect(px,py,pw,ph);ctx.fill();text("YOUR PORTRAIT",px+pw/2,py+ph/2,"700 20px 'DM Sans'","#c5a45c","center");}
  ctx.strokeStyle=C.gold;ctx.lineWidth=4;ctx.strokeRect(px,py,pw,ph);ctx.strokeStyle="rgba(246,242,232,.65)";ctx.lineWidth=1;ctx.strokeRect(px+11,py+11,pw-22,ph-22);
  // Location is presented as the attendee's point of origin
  ctx.fillStyle=C.cream;ctx.fillRect(76,820,928,92);ctx.fillStyle=C.gold;ctx.fillRect(76,820,9,92);
