@@ -16,24 +16,38 @@
  text(config.churchName,540,105,`800 ${fit(config.churchName,900,58,44)}px 'Playfair Display'`,C.cream,"center");
  text(config.churchSubname,540,145,`800 ${fit(config.churchSubname,900,29,23)}px 'DM Sans'`,C.gold,"center");
  ctx.fillStyle=C.gold;ctx.fillRect(455,165,170,4);
- // Theme marker and clock establish a clear visual cue for the headline
- ctx.fillStyle="rgba(197,164,92,.16)";ctx.fillRect(76,220,112,34);
- ctx.strokeStyle=C.gold;ctx.lineWidth=1.5;ctx.strokeRect(76,220,112,34);
- text("THEME",132,243,"700 16px 'DM Sans'",C.gold,"center");
- ctx.fillStyle=C.gold;ctx.fillRect(198,235,76,2);
- ctx.beginPath();ctx.arc(278,236,4,0,Math.PI*2);ctx.fill();
- // Larger, aligned two-line theme headline
- text("TIME TO",76,358,`700 ${fit("TIME TO",440,98,82)}px 'DM Sans'`,C.cream);
- text("GATHER",76,466,`italic 700 ${fit("GATHER",440,116,96)}px 'Playfair Display'`,C.gold);
- // Fine-line clock illustration beside the headline
- const cx=492,cy=350,cr=31;
- ctx.strokeStyle=C.gold;ctx.lineWidth=3;ctx.beginPath();ctx.arc(cx,cy,cr,0,Math.PI*2);ctx.stroke();
- ctx.fillStyle=C.cream;ctx.beginPath();ctx.arc(cx,cy,3,0,Math.PI*2);ctx.fill();
- ctx.strokeStyle=C.cream;ctx.lineWidth=3;ctx.lineCap="round";
- ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx,cy-17);ctx.moveTo(cx,cy);ctx.lineTo(cx+14,cy+8);ctx.stroke();
+ // Theme label points directly to the message
+ const themeCenter=298;
+ ctx.fillStyle="rgba(197,164,92,.16)";ctx.fillRect(themeCenter-65,220,130,34);
+ ctx.strokeStyle=C.gold;ctx.lineWidth=1.5;ctx.strokeRect(themeCenter-65,220,130,34);
+ text("THEME",themeCenter,243,"700 16px 'DM Sans'",C.gold,"center");
+ ctx.fillStyle=C.gold;ctx.fillRect(themeCenter-108,236,36,2);
+ ctx.fillRect(themeCenter+72,236,36,2);
+ // A proper clock face: twelve markers, distinct hands and a clear centre pin
+ const cx=themeCenter,cy=316,cr=39;
+ ctx.save();
+ ctx.shadowColor="rgba(197,164,92,.25)";ctx.shadowBlur=14;
+ ctx.strokeStyle=C.gold;ctx.lineWidth=3.5;ctx.beginPath();ctx.arc(cx,cy,cr,0,Math.PI*2);ctx.stroke();
+ ctx.restore();
+ ctx.strokeStyle="rgba(197,164,92,.65)";ctx.lineWidth=1;
+ ctx.beginPath();ctx.arc(cx,cy,cr-7,0,Math.PI*2);ctx.stroke();
+ for(let a=0;a<12;a++){
+   const ang=a*Math.PI/6,major=a%3===0,inner=major?cr-13:cr-10,outer=cr-5;
+   ctx.strokeStyle=major?C.cream:C.gold;ctx.lineWidth=major?2.5:1.4;
+   ctx.beginPath();ctx.moveTo(cx+Math.sin(ang)*inner,cy-Math.cos(ang)*inner);ctx.lineTo(cx+Math.sin(ang)*outer,cy-Math.cos(ang)*outer);ctx.stroke();
+ }
+ // Hands are set as a visual symbol of the moment to gather, not an event-time claim
+ ctx.lineCap="round";ctx.strokeStyle=C.cream;ctx.lineWidth=4;
+ ctx.beginPath();ctx.moveTo(cx,cy+3);ctx.lineTo(cx-1,cy-20);ctx.stroke();
+ ctx.strokeStyle=C.gold;ctx.lineWidth=3.5;
+ ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+19,cy+11);ctx.stroke();
+ ctx.fillStyle=C.cream;ctx.beginPath();ctx.arc(cx,cy,4.5,0,Math.PI*2);ctx.fill();
  ctx.lineCap="butt";
- // Subtle clock markers
- for(let a=0;a<12;a++){const ang=a*Math.PI/6;ctx.beginPath();ctx.moveTo(cx+Math.sin(ang)*24,cy-Math.cos(ang)*24);ctx.lineTo(cx+Math.sin(ang)*27,cy-Math.cos(ang)*27);ctx.stroke();}
+ text("IT'S TIME",themeCenter,cy+cr+23,"700 12px 'DM Sans'",C.gold,"center");
+ // Three-line headline, optically centred in the space beside the portrait
+ text("TIME",themeCenter,430,`800 ${fit("TIME",390,76,66)}px 'DM Sans'`,C.cream,"center");
+ text("TO",themeCenter,510,`800 ${fit("TO",390,76,66)}px 'DM Sans'`,C.cream,"center");
+ text("GATHER",themeCenter,602,`italic 700 ${fit("GATHER",420,91,76)}px 'Playfair Display'`,C.gold,"center");
  
  // Portrait sits in its own right-hand column and never crosses the theme
  const px=560,py=225,pw=444,ph=570;
@@ -42,8 +56,19 @@
  ctx.strokeStyle=C.gold;ctx.lineWidth=4;ctx.strokeRect(px,py,pw,ph);ctx.strokeStyle="rgba(246,242,232,.65)";ctx.lineWidth=1;ctx.strokeRect(px+11,py+11,pw-22,ph-22);
  // Personalised attendee details
  ctx.fillStyle=C.cream;ctx.fillRect(76,810,928,160);ctx.fillStyle=C.gold;ctx.fillRect(76,810,9,160);
- const attendee="I "+(nameInput.value.trim()||"YOUR NAME").toUpperCase()+" from";text(attendee,112,875,`700 ${fit(attendee,840,43)}px 'DM Sans'`,C.deep);
- const attendeeLocation=(locationInput.value.trim()||"YOUR LOCATION").toUpperCase()+" is attending "+config.programmeName.toUpperCase();text(attendeeLocation,114,932,`700 ${fit(attendeeLocation,850,27,18)}px 'DM Sans'`,"#315b49");
+ // Centre the attendee statement and use distinct accent colours for the name and event
+ const attendeeName=(nameInput.value.trim()||"YOUR NAME").toUpperCase();
+ const firstParts=[{value:"I ",color:C.deep},{value:attendeeName,color:"#a77b32"},{value:" from",color:C.deep}];
+ ctx.font=`700 ${fit("I "+attendeeName+" from",850,43,25)}px 'DM Sans'`;
+ let firstX=540-firstParts.reduce((sum,p)=>sum+ctx.measureText(p.value).width,0)/2;
+ ctx.textAlign="left";firstParts.forEach(p=>{ctx.fillStyle=p.color;ctx.fillText(p.value,firstX,875);firstX+=ctx.measureText(p.value).width;});
+ const attendeePlace=(locationInput.value.trim()||"YOUR LOCATION").toUpperCase()+" is attending ";
+ const eventTitle=config.programmeName.toUpperCase();
+ const secondFont=`700 ${fit(attendeePlace+eventTitle,850,27,16)}px 'DM Sans'`;
+ ctx.font=secondFont;
+ let secondX=540-(ctx.measureText(attendeePlace).width+ctx.measureText(eventTitle).width)/2;
+ ctx.textAlign="left";ctx.fillStyle="#315b49";ctx.fillText(attendeePlace,secondX,932);
+ secondX+=ctx.measureText(attendeePlace).width;ctx.fillStyle="#a77b32";ctx.fillText(eventTitle,secondX,932);
  // Date and venue are large, high-contrast event information
  text("DATE",76,1018,"700 13px 'DM Sans'","#d7c28f");
  text(config.date,76,1064,`800 ${fit(config.date,925,34,24)}px 'DM Sans'`,C.cream);
