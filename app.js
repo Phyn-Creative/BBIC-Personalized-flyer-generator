@@ -43,7 +43,6 @@
  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+19,cy+11);ctx.stroke();
  ctx.fillStyle=C.cream;ctx.beginPath();ctx.arc(cx,cy,4.5,0,Math.PI*2);ctx.fill();
  ctx.lineCap="butt";
- text("IT'S TIME",themeCenter,cy+cr+23,"700 12px 'DM Sans'",C.gold,"center");
  // Three-line headline, optically centred in the space beside the portrait
  text("TIME",themeCenter,430,`800 ${fit("TIME",390,76,66)}px 'DM Sans'`,C.cream,"center");
  text("TO",themeCenter,510,`800 ${fit("TO",390,76,66)}px 'DM Sans'`,C.cream,"center");
@@ -58,7 +57,7 @@
  ctx.fillStyle=C.cream;ctx.fillRect(76,810,928,160);ctx.fillStyle=C.gold;ctx.fillRect(76,810,9,160);
  // Centre the attendee statement and use distinct accent colours for the name and event
  const attendeeName=(nameInput.value.trim()||"YOUR NAME").toUpperCase();
- const firstParts=[{value:"I ",color:C.deep},{value:attendeeName,color:"#a77b32"},{value:" from",color:C.deep}];
+ const firstParts=[{value:"I, ",color:C.deep},{value:attendeeName,color:"#a77b32"},{value:" from",color:C.deep}];
  ctx.font=`700 ${fit("I "+attendeeName+" from",850,43,25)}px 'DM Sans'`;
  let firstX=540-firstParts.reduce((sum,p)=>sum+ctx.measureText(p.value).width,0)/2;
  ctx.textAlign="left";firstParts.forEach(p=>{ctx.fillStyle=p.color;ctx.fillText(p.value,firstX,875);firstX+=ctx.measureText(p.value).width;});
