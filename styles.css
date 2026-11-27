@@ -18,3 +18,18 @@ h2{font:600 22px 'Playfair Display',serif;margin:0;color:var(--green)}.section-h
 .footer{border-top:1px solid #d9d9d0;padding:22px 0 28px;display:flex;justify-content:space-between;font-size:8px}
 @media(max-width:800px){.shell{padding:0 18px}.intro{padding:38px 0 26px}.workspace{grid-template-columns:1fr;gap:17px}.form-panel,.preview-panel{padding:20px}.preview-panel{grid-row:2}.poster-wrap{width:min(100%,440px)}.topbar{height:70px}.top-note{font-size:7px;letter-spacing:.12em}}
 @media(max-width:420px){.footer{font-size:7px;letter-spacing:.08em}.preview-panel{padding:14px}.form-panel{padding:17px}.download-actions{gap:7px}.share-button{width:100px}}
+/* User-controlled portrait crop */
+.crop-modal{position:fixed;inset:0;z-index:20;background:#101d18c9;display:grid;place-items:center;padding:18px}
+.crop-modal[hidden]{display:none}
+.crop-dialog{width:min(100%,440px);background:#fff;border-radius:14px;padding:22px;box-shadow:0 20px 70px #0005;text-align:center}
+.crop-dialog h2{margin:0;color:var(--green)}
+.crop-dialog p{font-size:11px;line-height:1.6;color:#747d75;margin:8px 0 15px}
+.crop-dialog canvas{width:min(100%,300px);height:auto;aspect-ratio:444/570;margin:0 auto;border:2px solid var(--gold);border-radius:5px;touch-action:none;cursor:grab}
+.crop-dialog canvas:active{cursor:grabbing}
+.crop-zoom{display:flex;align-items:center;gap:14px;margin:16px auto;font-size:9px;font-weight:800;letter-spacing:.14em;color:#68746a}
+.crop-zoom input{flex:1;accent-color:var(--green)}
+.crop-actions{display:flex;gap:9px}
+.crop-actions button{flex:1;height:43px;border:0;border-radius:6px;font:700 11px 'DM Sans',sans-serif;cursor:pointer}
+.crop-actions button:first-child{background:#efeee8;color:var(--green)}
+.crop-actions button:last-child{background:var(--green);color:white}
+.download-actions .download-button{width:100%}
