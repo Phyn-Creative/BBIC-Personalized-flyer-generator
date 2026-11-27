@@ -76,7 +76,7 @@
  ctx.fillStyle="rgba(197,164,92,.55)";ctx.fillRect(76,1090,928,2);
  text("VENUE",76,1130,"700 13px 'DM Sans'","#d7c28f");
  text("TIME",76,1112,"700 13px 'DM Sans'","#d7c28f");
- trackedText("5:00 PM DAILY",76,1148,"800 27px 'DM Sans'",C.cream,2);
+ trackedText(config.eventTime || "5:00 PM DAILY",76,1148,"800 27px 'DM Sans'",C.cream,2);
  text("VENUE",76,1182,"700 13px 'DM Sans'","#d7c28f");
  trackedText(config.venueName,76,1218,`800 ${fit(config.venueName,925,27,19)}px 'DM Sans'`,C.cream,1.5);
  const addr=config.venueAddress;trackedText(addr,76,1250,`600 ${fit(addr,925,18,14)}px 'DM Sans'`,"#d0d6cf",.8);
