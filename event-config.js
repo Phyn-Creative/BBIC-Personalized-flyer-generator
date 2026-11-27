@@ -9,6 +9,7 @@ window.EVENT_CONFIG = {
   programmeName: "COVENANT SUMMIT 2026",
   theme: "TIME TO GATHER",
   date: "14TH – 20TH DECEMBER 2026",
+  eventTime: "5:00 PM DAILY",
   venueName: "BEAUTY & BANDS INTERNATIONAL CHURCH AUDITORIUM",
   venueAddress: "CAR-WASH JUNCTION, IWO ROAD – AGBOWO EXPRESSWAY, AGBOWO, IBADAN",
   colors: {
