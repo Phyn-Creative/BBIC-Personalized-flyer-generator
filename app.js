@@ -1,10 +1,12 @@
 (() => {
  const config=window.EVENT_CONFIG,canvas=document.getElementById("flyerCanvas"),ctx=canvas.getContext("2d");
  const photoInput=document.getElementById("photoInput"),nameInput=document.getElementById("nameInput"),locationInput=document.getElementById("locationInput");
- const previewButton=document.getElementById("previewButton"),downloadButton=document.getElementById("downloadButton"),shareButton=document.getElementById("shareButton"),whatsappButton=document.getElementById("whatsappButton"),emptyOverlay=document.getElementById("emptyOverlay"),errorMessage=document.getElementById("errorMessage");
- let photo=null,generated=false;
+ const previewButton=document.getElementById("previewButton"),downloadButton=document.getElementById("downloadButton"),whatsappButton=document.getElementById("whatsappButton"),emptyOverlay=document.getElementById("emptyOverlay"),errorMessage=document.getElementById("errorMessage");
+ let photo=null,generated=false,cropImage=null,cropZoom=1,cropOffsetX=0,cropOffsetY=0,cropDragging=false,cropPointerX=0,cropPointerY=0;
+ const cropModal=document.getElementById("cropModal"),cropCanvas=document.getElementById("cropCanvas"),cropCtx=cropCanvas.getContext("2d"),cropZoomInput=document.getElementById("cropZoom"),cropApply=document.getElementById("cropApply"),cropCancel=document.getElementById("cropCancel");
  document.getElementById("brandChurch").textContent=config.churchName;document.querySelector(".brand small").textContent=config.churchSubname;
  const text=(value,x,y,font,color,align="left")=>{ctx.font=font;ctx.fillStyle=color;ctx.textAlign=align;ctx.fillText(value,x,y)};
+ const trackedText=(value,x,y,font,color,spacing=2,align="left")=>{ctx.font=font;ctx.fillStyle=color;const chars=[...value];const width=chars.reduce((n,ch)=>n+ctx.measureText(ch).width,0)+Math.max(0,chars.length-1)*spacing;let px=align==="center"?x-width/2:align==="right"?x-width:x;ctx.textAlign="left";for(const ch of chars){ctx.fillText(ch,px,y);px+=ctx.measureText(ch).width+spacing;}};
  function fit(value,max,font,min=18){let s=font;ctx.font=`700 ${s}px 'DM Sans'`;while(ctx.measureText(value).width>max&&s>min){s--;ctx.font=`700 ${s}px 'DM Sans'`;}return s;}
  function draw(){
  const C=config.colors;ctx.clearRect(0,0,1080,1350);
@@ -13,9 +15,9 @@
  ctx.strokeStyle="rgba(197,164,92,.22)";ctx.lineWidth=2;for(let r=150;r<420;r+=48){ctx.beginPath();ctx.arc(1050,260,r,0,Math.PI*2);ctx.stroke();}
  ctx.strokeStyle=C.gold;ctx.lineWidth=2;ctx.strokeRect(28,28,1024,1294);ctx.strokeStyle="rgba(246,242,232,.25)";ctx.lineWidth=1;ctx.strokeRect(42,42,996,1266);
  // Church identity is presented as a prominent, centered masthead
- text(config.churchName,540,105,`800 ${fit(config.churchName,900,58,44)}px 'Playfair Display'`,C.cream,"center");
- text(config.churchSubname,540,145,`800 ${fit(config.churchSubname,900,29,23)}px 'DM Sans'`,C.gold,"center");
- ctx.fillStyle=C.gold;ctx.fillRect(455,165,170,4);
+ trackedText(config.churchName,540,108,`800 ${fit(config.churchName,940,68,48)}px 'Playfair Display'`,C.cream,4,"center");
+ trackedText(config.churchSubname,540,151,`800 ${fit(config.churchSubname,940,31,23)}px 'DM Sans'`,C.gold,4,"center");
+ ctx.fillStyle=C.gold;ctx.fillRect(430,171,220,4);
  // Theme label points directly to the message
  const themeCenter=298;
  ctx.fillStyle="rgba(197,164,92,.16)";ctx.fillRect(themeCenter-65,220,130,34);
@@ -73,21 +75,29 @@
  text(config.date,76,1064,`800 ${fit(config.date,925,34,24)}px 'DM Sans'`,C.cream);
  ctx.fillStyle="rgba(197,164,92,.55)";ctx.fillRect(76,1090,928,2);
  text("VENUE",76,1130,"700 13px 'DM Sans'","#d7c28f");
- text(config.venueName,76,1170,`800 ${fit(config.venueName,925,23,16)}px 'DM Sans'`,C.cream);
- const addr=config.venueAddress;text(addr,76,1208,`500 ${fit(addr,925,18,13)}px 'DM Sans'`,"#d0d6cf");
- ctx.fillStyle="rgba(197,164,92,.25)";ctx.fillRect(76,1242,928,1);
+ text("TIME",76,1112,"700 13px 'DM Sans'","#d7c28f");
+ trackedText("5:00 PM DAILY",76,1148,"800 27px 'DM Sans'",C.cream,2);
+ text("VENUE",76,1182,"700 13px 'DM Sans'","#d7c28f");
+ trackedText(config.venueName,76,1218,`800 ${fit(config.venueName,925,27,19)}px 'DM Sans'`,C.cream,1.5);
+ const addr=config.venueAddress;trackedText(addr,76,1250,`600 ${fit(addr,925,18,14)}px 'DM Sans'`,"#d0d6cf",.8);
  text("YOU ARE INVITED. COME EXPECTANT.",76,1280,"700 15px 'DM Sans'","#e2d4ad");
  }
  function err(message){errorMessage.textContent=message;}
- function setReady(){generated=true;emptyOverlay.hidden=true;downloadButton.disabled=shareButton.disabled=whatsappButton.disabled=false;}
+ function setReady(){generated=true;emptyOverlay.hidden=true;downloadButton.disabled=whatsappButton.disabled=false;}
  function render(){draw();setReady();}
  function flyerBlob(){return new Promise(resolve=>canvas.toBlob(resolve,"image/png"));}
  function filename(){return `Covenant-Summit-2026-${(nameInput.value.trim()||"attendee").replace(/[^a-z0-9]+/gi,"-")}.png`;}
- photoInput.addEventListener("change",()=>{err("");const file=photoInput.files&&photoInput.files[0];if(!file)return;if(!file.type.startsWith("image/")){err("Please choose an image file.");return;}if(file.size>12*1024*1024){err("Please choose a photo smaller than 12 MB.");return;}const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{photo=img;document.getElementById("uploadTitle").textContent=file.name;document.getElementById("uploadHint").textContent="Your portrait is ready";render();URL.revokeObjectURL(url);};img.onerror=()=>{err("We couldn't read that image. Please try another photo.");URL.revokeObjectURL(url);};img.src=url;});
- previewButton.addEventListener("click",()=>{err("");if(!photo){err("Please add your portrait first.");photoInput.focus();return;}if(!nameInput.value.trim()){err("Please enter your name.");nameInput.focus();return;}if(!locationInput.value.trim()){err("Please enter your location.");locationInput.focus();return;}render();});
+ function drawCrop(){if(!cropImage)return;const w=cropCanvas.width,h=cropCanvas.height,scale=Math.max(w/cropImage.width,h/cropImage.height)*cropZoom,rw=cropImage.width*scale,rh=cropImage.height*scale;cropOffsetX=Math.min(0,Math.max(w-rw,cropOffsetX));cropOffsetY=Math.min(0,Math.max(h-rh,cropOffsetY));cropCtx.clearRect(0,0,w,h);cropCtx.drawImage(cropImage,cropOffsetX,cropOffsetY,rw,rh);}
+ function openCrop(img,file){cropImage=img;cropZoom=1;const scale=Math.max(cropCanvas.width/img.width,cropCanvas.height/img.height);cropOffsetX=(cropCanvas.width-img.width*scale)/2;cropOffsetY=(cropCanvas.height-img.height*scale)/2;cropZoomInput.value="1";document.getElementById("uploadTitle").textContent=file.name;document.getElementById("uploadHint").textContent="Adjust your portrait, then confirm the crop";drawCrop();cropModal.hidden=false;}
+ cropZoomInput.addEventListener("input",()=>{const factor=Number(cropZoomInput.value)/cropZoom,cx=cropCanvas.width/2,cy=cropCanvas.height/2;cropZoom=Number(cropZoomInput.value);cropOffsetX=cx-(cx-cropOffsetX)*factor;cropOffsetY=cy-(cy-cropOffsetY)*factor;drawCrop();});
+ cropCanvas.addEventListener("pointerdown",e=>{cropDragging=true;cropPointerX=e.clientX;cropPointerY=e.clientY;cropCanvas.setPointerCapture(e.pointerId);});
+ cropCanvas.addEventListener("pointermove",e=>{if(!cropDragging)return;const rect=cropCanvas.getBoundingClientRect();cropOffsetX+=(e.clientX-cropPointerX)*cropCanvas.width/rect.width;cropOffsetY+=(e.clientY-cropPointerY)*cropCanvas.height/rect.height;cropPointerX=e.clientX;cropPointerY=e.clientY;drawCrop();});
+ cropCanvas.addEventListener("pointerup",()=>cropDragging=false);cropCanvas.addEventListener("pointercancel",()=>cropDragging=false);
+ cropCancel.addEventListener("click",()=>{cropModal.hidden=true;photoInput.value="";});
+ cropApply.addEventListener("click",()=>{const result=new Image();result.onload=()=>{photo=result;cropModal.hidden=true;document.getElementById("uploadHint").textContent="Your cropped portrait is ready";render();};result.src=cropCanvas.toDataURL("image/png");});
+ photoInput.addEventListener("change",()=>{err("");const file=photoInput.files&&photoInput.files[0];if(!file)return;if(!file.type.startsWith("image/")){err("Please choose an image file.");return;}if(file.size>12*1024*1024){err("Please choose a photo smaller than 12 MB.");return;}const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{openCrop(img,file);URL.revokeObjectURL(url);};img.onerror=()=>{err("We couldn't read that image. Please try another photo.");URL.revokeObjectURL(url);};img.src=url;}); previewButton.addEventListener("click",()=>{err("");if(!photo){err("Please add your portrait first.");photoInput.focus();return;}if(!nameInput.value.trim()){err("Please enter your name.");nameInput.focus();return;}if(!locationInput.value.trim()){err("Please enter your location.");locationInput.focus();return;}render();});
  [nameInput,locationInput].forEach(el=>el.addEventListener("input",()=>{if(generated)draw();}));
  downloadButton.addEventListener("click",()=>{if(!generated)return;const a=document.createElement("a");a.download=filename();a.href=canvas.toDataURL("image/png");a.click();});
- shareButton.addEventListener("click",async()=>{if(!generated)return;err("");const blob=await flyerBlob();if(!blob){err("Could not prepare the flyer. Please download it instead.");return;}const file=new File([blob],filename(),{type:"image/png"});if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){try{await navigator.share({files:[file],title:config.programmeName,text:`I'm attending ${config.programmeName} — ${config.theme}! Join me, ${nameInput.value}, from ${locationInput.value}.`});}catch(e){if(e.name!=="AbortError")err("Sharing was interrupted. You can still download the PNG.");}}else{err("This browser cannot share image files directly. Download the PNG, then attach it in your social app.");document.getElementById("shareNote").textContent="Tip: Download the PNG, open WhatsApp, Instagram, Facebook or any other social app, and attach the image from your gallery."; }});
  whatsappButton.addEventListener("click",async()=>{if(!generated)return;const blob=await flyerBlob();if(!blob)return;const file=new File([blob],filename(),{type:"image/png"});const message=`I'm attending ${config.programmeName} — ${config.theme}! Join me from ${locationInput.value}. ${config.date} at ${config.venueName}.`;if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:config.programmeName,text:message});return;}catch(e){if(e.name==="AbortError")return;}}
  const a=document.createElement("a");a.href="https://wa.me/?text="+encodeURIComponent(message+" I'll attach my personalised flyer.");a.target="_blank";a.rel="noopener";a.click();err("WhatsApp opened with your invitation message. Attach the downloaded flyer image before sending.");});
  draw();
