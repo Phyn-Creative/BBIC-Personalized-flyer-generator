@@ -17,8 +17,10 @@
 <p class="privacy-note"><span>✦</span> Your photo stays on your device. It is never uploaded.</p><p class="error" id="errorMessage" role="alert"></p></form>
 <section class="preview-panel" aria-label="Flyer preview"><div class="preview-heading"><div><span class="step">02</span><strong>Your invitation</strong></div><span class="live-label"><i></i> LIVE PREVIEW</span></div>
 <div class="poster-wrap"><canvas id="flyerCanvas" width="1080" height="1350" aria-label="Personalised Covenant Summit flyer"></canvas><div class="empty-overlay" id="emptyOverlay"><span>✦</span><strong>Your invitation starts here</strong><small>Add your portrait and details to create it.</small></div></div>
-<div class="download-actions"><button class="download-button" type="button" id="downloadButton" disabled>Download PNG <span>↓</span></button><button class="share-button" type="button" id="shareButton" disabled><span>↗</span> Share</button></div>
+<div class="download-actions"><button class="download-button" type="button" id="downloadButton" disabled>Download PNG <span>↓</span></button></div>
 <div class="social-actions"><button class="whatsapp-button" type="button" id="whatsappButton" disabled><span>◉</span> Share on WhatsApp</button></div>
-<p class="share-note" id="shareNote">Your flyer is made for sharing. Use Share for your device's available apps, or WhatsApp to send the invitation to your contacts.</p><p class="preview-footnote">Portrait format · High-resolution 1080 × 1350 PNG</p></section>
-</section><footer class="footer"><span>TIME TO GATHER</span><span>BEAUTY &amp; BANDS INTERNATIONAL CHURCH</span></footer></main>
+<p class="share-note" id="shareNote">Download your flyer or share your invitation directly on WhatsApp.</p><p class="preview-footnote">Portrait format · High-resolution 1080 × 1350 PNG</p></section>
+</section>
+<div class="crop-modal" id="cropModal" hidden><div class="crop-dialog" role="dialog" aria-modal="true" aria-labelledby="cropTitle"><h2 id="cropTitle">Position your portrait</h2><p>Drag the photo to reposition it and use the slider to zoom in or out.</p><canvas id="cropCanvas" width="444" height="570"></canvas><label class="crop-zoom" for="cropZoom">ZOOM <input id="cropZoom" type="range" min="1" max="3" step="0.01" value="1"></label><div class="crop-actions"><button type="button" id="cropCancel">Cancel</button><button type="button" id="cropApply">Use this crop</button></div></div></div>
+<footer class="footer"><span>TIME TO GATHER</span><span>BEAUTY &amp; BANDS INTERNATIONAL CHURCH</span></footer></main>
 <script src="event-config.js"></script><script src="app.js"></script></body></html>
